@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Path@Penn – Register</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Ribbon -->
+  <header class="ribbon">
+    <a href="index.html" class="ribbon-link">
+      <div class="ribbon-content">
+        <img src="logo.png" alt="Penn Logo" class="logo" />
+        <div class="title-block">
+          <div class="title-penn">Penn</div>
+          <div class="title-sub">University of Pennsylvania</div>
+        </div>
+      </div>
+    </a>
+  </header>
+
+  <main class="app" aria-label="Registration Search" style="text-align:center; margin-top:40px;">
+    <h1 class="big-title">What class are you looking for?</h1>
+
+    <div class="searchbar-vertical" style="margin-top: 8px;">
+      <input
+        id="search"
+        type="search"
+        placeholder="Enter title, instructor, subject, keyword"
+        aria-label="Search courses by title, instructor, subject, or keyword"
+      />
+      <button id="search-btn" class="btn btn-primary" type="button" aria-label="Search">Search</button>
+      <p id="search-error" class="error-msg" role="alert" aria-live="polite" hidden>
+        Please enter a keyword.
+      </p>
+    </div>
+
+    <!-- Bottom-center greeting -->
+    <div class="greeting">
+      Hi Name, <a href="#" class="logout">Logout</a>
+    </div>
+  </main>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="document">
+      <h3 id="modal-title" class="modal-title">Notice</h3>
+      <p id="modal-msg" class="modal-msg">…</p>
+      <div class="modal-actions">
+        <button id="modal-close" class="btn btn-ghost" type="button" data-close-modal>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('search');
+    const btn = document.getElementById('search-btn');
+    const error = document.getElementById('search-error');
+
+    btn.addEventListener('click', () => {
+      const q = input.value.trim();
+      if (!q) {
+        error.hidden = false;
+        input.focus();
+      } else {
+        error.hidden = true;
+        // Navigate to results page
+        const url = new URL('course.html', window.location.href);
+        url.searchParams.set('q', q);
+        window.location.href = url.toString();
+      }
+    });
+
+    input.addEventListener('input', () => {
+      if (input.value.trim()) error.hidden = true;
+    });
+
+    // Modal close
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('[data-close-modal]')) {
+        document.getElementById('modal').hidden = true;
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.getElementById('modal').hidden = true;
+      }
+    });
+  </script>
+</body>
+</html>

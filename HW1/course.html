@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Path@Penn – CIS 1200</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Ribbon -->
+  <header class="ribbon">
+    <a href="index.html" class="ribbon-link">
+      <div class="ribbon-content">
+        <img src="logo.png" alt="Penn Logo" class="logo" />
+        <div class="title-block">
+          <div class="title-penn">Penn</div>
+          <div class="title-sub">University of Pennsylvania</div>
+        </div>
+      </div>
+    </a>
+  </header>
+
+  <main class="app" aria-label="Course Detail">
+    <section class="session-card one-box" aria-label="Sessions">
+      <h3 class="session-box-title">CIS 1200 – Programming Languages and Techniques I</h3>
+
+      <div class="session-row">
+        <div class="session-left">
+          <span class="session-code">001</span>
+          <span class="session-availability">(Available 55/240)</span>
+        </div>
+        <button class="btn btn-blue" data-session="001" type="button">Join</button>
+      </div>
+
+      <div class="session-row">
+        <div class="session-left">
+          <span class="session-code">201</span>
+          <span class="session-availability">(Available 3/20)</span>
+          <span class="inline-conflict">
+            <span class="conf-icon" aria-hidden="true">⚠️</span>
+            In conflict with CIS 1050
+          </span>
+        </div>
+        <button class="btn btn-blue" data-session="201" type="button">Join</button>
+      </div>
+
+      <div class="session-row">
+        <div class="session-left">
+          <span class="session-code">202</span>
+          <span class="session-availability">(Available 3/20)</span>
+        </div>
+        <button class="btn btn-blue" data-session="202" type="button">Join</button>
+      </div>
+
+      <div class="session-row">
+        <div class="session-left">
+          <span class="session-code">203</span>
+          <span class="session-availability">(Available 0/20)</span>
+        </div>
+        <button class="btn btn-blue" data-session="203" type="button">Join</button>
+      </div>
+    </section>
+
+    <!-- Bottom-center greeting -->
+    <div class="greeting">
+      Hi Name, <a href="#" class="logout">Logout</a>
+    </div>
+  </main>
+
+  <!-- Modal for success/conflict -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="document">
+      <h3 id="modal-title" class="modal-title">Result</h3>
+      <p id="modal-msg" class="modal-msg">…</p>
+      <div class="modal-actions">
+        <button id="modal-close" class="btn btn-ghost" type="button" data-close-modal>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMsg = document.getElementById('modal-msg');
+
+    function openModal({ success, session }) {
+      if (success) {
+        modalTitle.textContent = 'Joined Successfully';
+        modalMsg.textContent = `You have joined session ${session}.`;
+        modal.classList.remove('modal-danger');
+        modal.classList.add('modal-success');
+      } else {
+        modalTitle.textContent = 'Conflict Detected';
+        modalMsg.textContent = 'Session 201 conflicts with your existing CIS 1050.';
+        modal.classList.remove('modal-success');
+        modal.classList.add('modal-danger');
+      }
+      modal.hidden = false;
+      document.getElementById('modal-close').focus();
+    }
+
+    function closeModal() { modal.hidden = true; }
+
+    document.querySelectorAll('[data-session]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const session = btn.getAttribute('data-session');
+        const conflict = (session === '201'); // only 201 conflicts for this prototype
+        openModal({ success: !conflict, session });
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('[data-close-modal]')) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>
