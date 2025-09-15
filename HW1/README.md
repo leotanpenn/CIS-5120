@@ -30,3 +30,9 @@ The implementation faithfully matches my Stage 3 design mockups while being ligh
    ```bash
    # in VS Code terminal
    npx live-server
+
+## Attributions
+
+- Portions of the HTML and CSS were generated using ChatGPT (GPT-5).  
+  Specifically, I asked it to scaffold a mobile-friendly layout with a header, dropdown menus, and a register button.  
+- I reviewed, tested, and modified all AI-generated code to ensure correctness and accessibility.
