@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Path@Penn – Quick Enroll</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Blue ribbon header -->
+  <header class="ribbon">
+    <a href="index.html" class="ribbon-link">
+      <div class="ribbon-content">
+        <img src="logo.png" alt="Penn Logo" class="logo" />
+        <div class="title-block">
+          <div class="title-penn">Penn</div>
+          <div class="title-sub">University of Pennsylvania</div>
+        </div>
+      </div>
+    </a>
+  </header>
+  <main class="app" aria-label="Registration">
+    <div class="greeting">
+      Hi Name, <a href="#" class="logout">Logout</a>
+    </div>
+    <h2 class="section-title">Register in a rush?</h2>
+
+    <!-- Quick Enroll Widget -->
+    <section class="card" aria-labelledby="widget-title">
+    <div class="row">
+      <div class="field">
+        <label for="level">Level</label>
+        <select id="level" name="level">
+          <option selected>Freshman</option>
+          <option>Sophomore</option>
+          <option>Junior</option>
+          <option>Senior</option>
+          <option>Master</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="dept">Department</label>
+        <select id="dept" name="department">
+          <option selected>CIS — Computer & Info Science</option>
+          <option>MEAM — Mechanical Engr</option>
+          <option>ESE — Electrical & Systems</option>
+          <option>STAT — Statistics</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="course">Course</label>
+        <select id="course" name="course">
+          <option selected>CIS 1200 — Prog Lang & Tech</option>
+          <option>CIS 1210 — Data Structures</option>
+          <option>MEAM 1010 — Intro to Mech Design</option>
+          <option>ESE 2100 — Circuits</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="rec">Linked Recitation</label>
+        <select id="rec" name="recitation">
+          <option selected>Rec 201 — Tue 10:15–11:45</option>
+          <option>Rec 202 — Thu 10:15–11:45</option>
+          <option>Rec 301 — Fri 09:00–10:30</option>
+        </select>
+      </div>
+    </div>
+
+      <!-- Live conflict status -->
+      <div id="live-status" class="status status-ok" role="status" aria-live="polite">
+        ✅ No conflict detected.
+      </div>
+
+      <button id="register-btn" class="btn btn-primary" type="button">Register</button>
+    </section>
+
+    <h2 class="section-title">Need more options?</h2>
+
+    <!-- Red buttons section -->
+    <section class="grid-buttons" aria-label="More actions">
+      <a class="btn btn-primary" href="register.html">Register for a class</a>
+      <button class="btn btn-primary" type="button">Explore</button>
+      <button class="btn btn-primary" type="button">View my cart</button>
+    </section>
+
+  </main>
+
+  <!-- Modal: result popup -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="document">
+      <h3 id="modal-title" class="modal-title">Result</h3>
+      <p id="modal-msg" class="modal-msg">…</p>
+      <div class="modal-actions">
+        <button id="modal-close" class="btn btn-ghost" type="button" data-close-modal>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const courseSelect = document.getElementById('course');
+    const recSelect = document.getElementById('rec');
+    const statusBox = document.getElementById('live-status');
+    const registerBtn = document.getElementById('register-btn');
+
+    const modal = document.getElementById('modal');
+    const modalMsg = document.getElementById('modal-msg');
+    const modalTitle = document.getElementById('modal-title');
+
+    function isConflict() {
+      const course = courseSelect.value.trim();
+      const rec = recSelect.value.trim();
+      return course.startsWith('CIS 1200') && rec.startsWith('Rec 201'); // Demo-only logic
+    }
+
+    function updateLiveStatus() {
+      if (isConflict()) {
+        statusBox.classList.remove('status-ok');
+        statusBox.classList.add('status-conflict');
+        statusBox.innerHTML = '⚠️ Conflict detected: <strong>CIS 1200</strong> with <strong>Rec 201 — Tue 10:15–11:45</strong> overlaps with your existing <strong>CIS 1050</strong>.';
+      } else {
+        statusBox.classList.remove('status-conflict');
+        statusBox.classList.add('status-ok');
+        statusBox.textContent = '✅ No conflict detected.';
+      }
+    }
+
+    function openModal({ success }) {
+      if (success) {
+        modalTitle.textContent = 'Registration Successful';
+        modalMsg.textContent = 'Your course has been added.';
+        modal.classList.remove('modal-danger');
+        modal.classList.add('modal-success');
+      } else {
+        modalTitle.textContent = 'Conflict Detected';
+        modalMsg.textContent = 'CIS 1200 with Rec 201 — Tue 10:15–11:45 conflicts with your existing CIS 1050.';
+        modal.classList.remove('modal-success');
+        modal.classList.add('modal-danger');
+      }
+      modal.hidden = false;
+      // Accessibility: focus trap start 
+      document.getElementById('modal-close').focus();
+    }
+
+    function closeModal() {
+      modal.hidden = true;
+      registerBtn.focus();
+    }
+
+    // Listeners
+    courseSelect.addEventListener('change', updateLiveStatus);
+    recSelect.addEventListener('change', updateLiveStatus);
+    registerBtn.addEventListener('click', () => {
+      const conflict = isConflict();
+      openModal({ success: !conflict });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (e.target.matches('[data-close-modal]')) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!modal.hidden && e.key === 'Escape') closeModal();
+    });
+
+    // Initial run
+    updateLiveStatus();
+  </script>
+</body>
+</html>
